@@ -3,23 +3,12 @@ import { isValid, isEasy, isMedium, isHard } from "./utils/passwordStrength";
 
 export default function App() {
   const [password, setPassword] = useState("");
-  const [pwdStrength, setPwdStrength] = useState({
-    easy: {
-      value: false,
-      color: "slate",
-    },
-    medium: {
-      value: false,
-      color: "black",
-    },
-    hard: {
-      value: false,
-      color: "slate",
-    },
-  });
+  const [pwdStrength, setPwdStrength] = useState(initial);
 
   const handleChange = (e) => {
     setPassword(e.target.value);
+
+    e.target.value.length === 0 && setPwdStrength(initial);
 
     !isValid(e.target.value) &&
       setPwdStrength({
@@ -62,27 +51,46 @@ export default function App() {
           value={password}
           onChange={handleChange}
         />
+        {/* Variable style properties - this is needed for Tailwind's JIT compiler to work properly */}
+        {/* border-slate-300 border-red-300 border-green-300 border-amber-300 */}
+        {/* bg-slate-100 bg-red-100 bg-green-100 bg-amber-100 */}
+        {/* text-slate-500 text-red-500 text-green-500 text-amber-500 */}
         <ul className="flex flex-col gap-4">
           <li
-            className={`border border-${pwdStrength.easy.color}-300 p-2 rounded-sm bg-${pwdStrength.easy.color}-200 text-${pwdStrength.easy.color}-500 font-dm-sans transition-colors`}
+            className={`border border-${pwdStrength.easy.color}-300 p-2 rounded-sm bg-${pwdStrength.easy.color}-100 text-${pwdStrength.easy.color}-500 text-sm font-dm-sans transition-colors`}
           >
-            <span className="font-semibold">Easy</span> | Password contains 8+
-            characters of the same type
+            <span className="font-semibold text-base">Easy</span> | Password
+            contains 8+ characters of the same type
           </li>
           <li
-            className={`border border-${pwdStrength.medium.color}-300 p-2 rounded-sm bg-${pwdStrength.medium.color}-200 text-${pwdStrength.medium.color}-500 font-dm-sans transition-colors`}
+            className={`border border-${pwdStrength.medium.color}-300 p-2 rounded-sm bg-${pwdStrength.medium.color}-100 text-${pwdStrength.medium.color}-500 text-sm font-dm-sans transition-colors`}
           >
-            <span className="font-semibold">Medium</span> | Password contains 8+
-            characters of 2 different types
+            <span className="font-semibold text-base">Medium</span> | Password
+            contains 8+ characters of 2 different types
           </li>
           <li
-            className={`border border-${pwdStrength.hard.color}-300 p-2 rounded-sm bg-${pwdStrength.hard.color}-200 text-${pwdStrength.hard.color}-500 font-dm-sans transition-colors`}
+            className={`border border-${pwdStrength.hard.color}-300 p-2 rounded-sm bg-${pwdStrength.hard.color}-100 text-${pwdStrength.hard.color}-500 text-sm font-dm-sans transition-colors`}
           >
-            <span className="font-semibold">Hard</span> | Password contains
-            letters, symbols, and numbers
+            <span className="font-semibold text-base">Hard</span>
+            {" | Password contains letters, symbols ($^+=><`~), and numbers"}
           </li>
         </ul>
       </div>
     </>
   );
 }
+
+const initial = {
+  easy: {
+    value: false,
+    color: "slate",
+  },
+  medium: {
+    value: false,
+    color: "slate",
+  },
+  hard: {
+    value: false,
+    color: "slate",
+  },
+};
