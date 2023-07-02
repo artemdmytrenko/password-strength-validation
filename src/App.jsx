@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { isValid, isEasy, isMedium, isHard } from "./utils/passwordStrength";
+import calculatePasswordStrength from "./utils/passwordStrength";
 
 export default function App() {
   const [password, setPassword] = useState("");
@@ -8,30 +8,30 @@ export default function App() {
   const handleChange = (e) => {
     setPassword(e.target.value);
 
-    e.target.value.length === 0 && setPwdStrength(initial);
-
-    !isValid(e.target.value) &&
+    let strength = calculatePasswordStrength(e.target.value);
+    strength === "empty" && setPwdStrength(initial);
+    strength === "invalid" &&
       setPwdStrength({
         easy: { value: false, color: "red" },
         medium: { value: false, color: "red" },
         hard: { value: false, color: "red" },
       });
 
-    isEasy(e.target.value) &&
+    strength === "easy" &&
       setPwdStrength({
         easy: { value: true, color: "red" },
         medium: { value: false, color: "slate" },
         hard: { value: false, color: "slate" },
       });
 
-    isMedium(e.target.value) &&
+    strength === "medium" &&
       setPwdStrength({
         easy: { value: false, color: "amber" },
         medium: { value: true, color: "amber" },
         hard: { value: false, color: "slate" },
       });
 
-    isHard(e.target.value) &&
+    strength === "hard" &&
       setPwdStrength({
         easy: { value: false, color: "green" },
         medium: { value: false, color: "green" },
@@ -41,7 +41,7 @@ export default function App() {
 
   return (
     <>
-      <div className="bg-slate-50 w-96 rounded-md p-9 shadow-xl shadow-slate-200 flex flex-col gap-6 ">
+      <div className="bg-slate-50 w-96 mobile:w-auto mobile:mx-8 rounded-md p-9 shadow-xl shadow-slate-200 flex flex-col gap-6 ">
         <h1 className="font-semibold text-2xl font-dm-sans">New password</h1>
         <input
           type="text"
@@ -75,6 +75,9 @@ export default function App() {
             {" | Password contains letters, symbols ($^+=><`~), and numbers"}
           </li>
         </ul>
+        <button className="self-end px-3 py-1 bg-slate-950 text-slate-50 font-semibold rounded border hover:bg-slate-800 transition-colors">
+          Submit
+        </button>
       </div>
     </>
   );

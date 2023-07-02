@@ -1,24 +1,21 @@
-const invalid = /^.{1,7}$/gu;
-const easy = /\p{S}{8,}|\p{L}{8,}|\p{N}{8,}/gu;
-const medium = [
-  /^(?=.*\p{L})(?=.*\p{N}).{8,}$/gu,
-  /^(?=.*\p{S})(?=.*\p{N}).{8,}$/gu,
-  /^(?=.*\p{S})(?=.*\p{L}).{8,}$/gu,
-];
-const hard = /^(?=.*\p{L})(?=.*\p{N})(?=.*\p{S}).{8,}/gu;
+export default function calculatePasswordStrength(pwd) {
+  const hasLetters = /[a-zA-Z]/.test(pwd);
+  const hasDigits = /\d/.test(pwd);
+  const hasSymbols = /[-~`! @#$%^&*()_+=:;"'<,>.?]+/.test(pwd);
 
-export const isValid = (pwd) => {
-  return !invalid.test(pwd);
-};
-
-export const isEasy = (pwd) => {
-  return isValid && easy.test(pwd);
-};
-
-export const isMedium = (pwd) => {
-  return isValid && medium.some((pattern) => pattern.test(pwd));
-};
-
-export const isHard = (pwd) => {
-  return isValid && hard.test(pwd);
-};
+  if (String(pwd).length === 0) {
+    return "empty";
+  } else if (String(pwd).length < 8) {
+    return "invalid"; // Password is less than 8 characters
+  } else if (
+    (hasLetters && hasSymbols && !hasDigits) ||
+    (hasLetters && hasDigits && !hasSymbols) ||
+    (hasDigits && hasSymbols && !hasLetters)
+  ) {
+    return "medium"; // Password is a combination of letters-symbols, letters-digits, or digits-symbols
+  } else if (hasLetters && hasDigits && hasSymbols) {
+    return "hard"; // Password has letters, symbols, and numbers
+  } else {
+    return "easy"; // Password doesn't meet any specific criteria
+  }
+}
